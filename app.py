@@ -5,13 +5,15 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import random
 
+from werkzeug.utils import send_from_directory
+
 from models import setup_db, Movie, Actor
 from auth import AuthError, requires_auth
 
 
 def create_app(test_config=None):
     # create and configure the app
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder="frontend/build", static_url_path="")
     setup_db(app)
     CORS(app, resources={r"/api/*": {"origins": "*"}})
 
@@ -25,7 +27,11 @@ def create_app(test_config=None):
         )
         return response
 
-    @app.route("/actors")
+    @app.route("/")
+    def index():
+        return send_from_directory(app.static_folder, "index.html")
+
+    @app.route("/api/actors")
     @requires_auth(permission="get:actors")
     def get_actors(payload):
         actors = [actor.format() for actor in Actor.query.all()]
@@ -33,7 +39,7 @@ def create_app(test_config=None):
             abort(404)
         return jsonify({"success": True, "actors": actors})
 
-    @app.route("/movies")
+    @app.route("/api/movies")
     @requires_auth(permission="get:movies")
     def get_movies(payload):
         movies = [movie.format() for movie in Movie.query.all()]
@@ -41,7 +47,7 @@ def create_app(test_config=None):
             abort(404)
         return jsonify({"success": True, "movies": movies})
 
-    @app.route("/actors/<int:id>", methods=["DELETE"])
+    @app.route("/api/actors/<int:id>", methods=["DELETE"])
     @requires_auth(permission="delete:actors")
     def delete_actor(payload, id):
         try:
@@ -64,7 +70,7 @@ def create_app(test_config=None):
         except:
             abort(422)
 
-    @app.route("/movies/<int:id>", methods=["DELETE"])
+    @app.route("/api/movies/<int:id>", methods=["DELETE"])
     @requires_auth(permission="delete:movies")
     def delete_movie(payload, id):
         try:
@@ -87,7 +93,7 @@ def create_app(test_config=None):
         except:
             abort(422)
 
-    @app.route("/actors", methods=["POST"])
+    @app.route("/api/actors", methods=["POST"])
     @requires_auth(permission="post:actors")
     def add_actor(payload):
         try:
@@ -106,7 +112,7 @@ def create_app(test_config=None):
         except:
             abort(422)
 
-    @app.route("/movies", methods=["POST"])
+    @app.route("/api/movies", methods=["POST"])
     @requires_auth(permission="post:movies")
     def add_movie(payload):
         try:
@@ -127,7 +133,7 @@ def create_app(test_config=None):
         except:
             abort(422)
 
-    @app.route("/actors/<int:id>", methods=["PATCH"])
+    @app.route("/api/actors/<int:id>", methods=["PATCH"])
     @requires_auth(permission="patch:actors")
     def edit_actor(payload, id):
         try:
@@ -158,7 +164,7 @@ def create_app(test_config=None):
         except:
             abort(422)
 
-    @app.route("/movies/<int:id>", methods=["PATCH"])
+    @app.route("/api/movies/<int:id>", methods=["PATCH"])
     @requires_auth(permission="patch:movies")
     def edit_movie(payload, id):
         try:

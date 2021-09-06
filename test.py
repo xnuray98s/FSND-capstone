@@ -47,7 +47,7 @@ class CapstoneTestCase(unittest.TestCase):
     def test_get_movies(self):
         # test with Assistant Role
         res = self.client().get(
-            "/movies", headers={"Authorization": f"Bearer {ASSISTANT_TOKEN}"}
+            "/api/movies", headers={"Authorization": f"Bearer {ASSISTANT_TOKEN}"}
         )
         data = json.loads(res.data.decode("utf-8"))
 
@@ -58,7 +58,7 @@ class CapstoneTestCase(unittest.TestCase):
     def test_get_actors(self):
         # test with Diretor Role
         res = self.client().get(
-            "/actors", headers={"Authorization": f"Bearer {DIRECTOR_TOKEN}"}
+            "/api/actors", headers={"Authorization": f"Bearer {DIRECTOR_TOKEN}"}
         )
         data = json.loads(res.data.decode("utf-8"))
 
@@ -69,7 +69,7 @@ class CapstoneTestCase(unittest.TestCase):
     def test_post_movies(self):
         # test with Diretor Role
         res = self.client().post(
-            "/movies",
+            "/api/movies",
             headers={"Authorization": f"Bearer {PRODUCER_TOKEN}"},
             json={
                 "title": "test",
@@ -91,7 +91,7 @@ class CapstoneTestCase(unittest.TestCase):
     def test_post_actor(self):
         # test with Producer Role
         res = self.client().post(
-            "/actors",
+            "/api/actors",
             headers={"Authorization": f"Bearer {DIRECTOR_TOKEN}"},
             json={
                 "name": "test",
@@ -111,7 +111,7 @@ class CapstoneTestCase(unittest.TestCase):
     def test_delete_movie(self):
         # test with Producer Role
         res = self.client().delete(
-            "/movies/1", headers={"Authorization": f"Bearer {PRODUCER_TOKEN}"}
+            "/api/movies/1", headers={"Authorization": f"Bearer {PRODUCER_TOKEN}"}
         )
         data = json.loads(res.data)
 
@@ -125,7 +125,7 @@ class CapstoneTestCase(unittest.TestCase):
     def test_delete_actor(self):
         # test with Producer Role
         res = self.client().delete(
-            "/actors/1", headers={"Authorization": f"Bearer {PRODUCER_TOKEN}"}
+            "/api/actors/1", headers={"Authorization": f"Bearer {PRODUCER_TOKEN}"}
         )
         data = json.loads(res.data)
 
@@ -139,7 +139,7 @@ class CapstoneTestCase(unittest.TestCase):
     def test_patch_movie(self):
         # test with Director Role
         res = self.client().patch(
-            "/movies/1",
+            "/api/movies/1",
             headers={"Authorization": f"Bearer {DIRECTOR_TOKEN}"},
             json={"title": "newTest"},
         )
@@ -152,7 +152,7 @@ class CapstoneTestCase(unittest.TestCase):
     def test_patch_actor(self):
         # test with Producer Role
         res = self.client().patch(
-            "/actors/1",
+            "/api/actors/1",
             headers={"Authorization": f"Bearer {PRODUCER_TOKEN}"},
             json={"name": "newTest"},
         )
@@ -164,7 +164,7 @@ class CapstoneTestCase(unittest.TestCase):
 
     def test_401_get_movies(self):
         res = self.client().get(
-            "/movies", headers={"Authorization": f"Bearer {NO_KID}"}
+            "/api/movies", headers={"Authorization": f"Bearer {NO_KID}"}
         )
         data = json.loads(res.data)
         message = data["message"]
@@ -175,7 +175,7 @@ class CapstoneTestCase(unittest.TestCase):
 
     def test_400_get_actors(self):
         res = self.client().get(
-            "/actors", headers={"Authorization": f"Bearer {NO_PERMISSIONS}"}
+            "/api/actors", headers={"Authorization": f"Bearer {NO_PERMISSIONS}"}
         )
         data = json.loads(res.data)
         message = data["message"]
@@ -187,7 +187,7 @@ class CapstoneTestCase(unittest.TestCase):
     def test_401_post_movies(self):
         # test without Authorization
         res = self.client().post(
-            "/movies",
+            "/api/movies",
             json={
                 "title": "test",
                 "image": "https://capstone-project98.s3-us-east-2.amazonaws.com/tourist.png",
@@ -208,7 +208,7 @@ class CapstoneTestCase(unittest.TestCase):
 
     def test_401_post_actors(self):
         res = self.client().post(
-            "/actors",
+            "/api/actors",
             headers={"Authorization": f"Bearer {ASSISTANT_TOKEN}"},
             json={
                 "name": "test",
@@ -228,7 +228,7 @@ class CapstoneTestCase(unittest.TestCase):
 
     def test_403_delete_actors(self):
         res = self.client().delete(
-            "/actors/1", headers={"Authorization": f"Bearer {ASSISTANT_TOKEN}"}
+            "/api/actors/1", headers={"Authorization": f"Bearer {ASSISTANT_TOKEN}"}
         )
         data = json.loads(res.data)
         message = data["message"]
@@ -238,7 +238,7 @@ class CapstoneTestCase(unittest.TestCase):
 
     def test_403_delete_movies(self):
         res = self.client().delete(
-            "/movies/1", headers={"Authorization": f"Bearer {DIRECTOR_TOKEN}"}
+            "/api/movies/1", headers={"Authorization": f"Bearer {DIRECTOR_TOKEN}"}
         )
         data = json.loads(res.data)
         message = data["message"]
@@ -249,7 +249,7 @@ class CapstoneTestCase(unittest.TestCase):
 
     def test_401_patch_movies(self):
         res = self.client().patch(
-            "/movies/1",
+            "/api/movies/1",
             headers={"Authorization": f"{PRODUCER_TOKEN}"},
             json={"title": "newTest"},
         )
@@ -262,7 +262,7 @@ class CapstoneTestCase(unittest.TestCase):
 
     def test_401_patch_actors(self):
         res = self.client().patch(
-            "/actors/1",
+            "/api/actors/1",
             headers={"Authorization": f"{PRODUCER_TOKEN}"},
             json={"name": "newTest"},
         )
