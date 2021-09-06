@@ -63,7 +63,7 @@ const ActorForm = () => {
           audience: "capstone",
           scope: "post:actors",
         });
-        const response = await fetch("/actors", {
+        const response = await fetch("/api/actors", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,

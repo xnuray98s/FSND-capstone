@@ -69,7 +69,7 @@ const Form = () => {
           audience: "capstone",
           scope: "post:movies",
         });
-        const response = await fetch("/movies", {
+        const response = await fetch("/api/movies", {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,

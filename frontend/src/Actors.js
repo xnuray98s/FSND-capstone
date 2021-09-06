@@ -14,10 +14,10 @@ const Actors = () => {
     (async () => {
       try {
         const token = await getAccessTokenSilently({
-          audience: 'capstone',
-          scope: 'get:actors',
+          audience: "capstone",
+          scope: "get:actors",
         });
-        const response = await fetch('/actors', {
+        const response = await fetch("/api/actors", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

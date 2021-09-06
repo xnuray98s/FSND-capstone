@@ -5,17 +5,17 @@ import MoviesList from "./MoviesList";
 import { useEffect, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 const Movies = () => {
-  const { getAccessTokenSilently } = useAuth0()
+  const { getAccessTokenSilently } = useAuth0();
   const [movies, setMovies] = useState(null);
- 
+
   useEffect(() => {
     (async () => {
       try {
         const token = await getAccessTokenSilently({
-          audience: 'capstone',
-          scope: 'get:movies',
+          audience: "capstone",
+          scope: "get:movies",
         });
-        const response = await fetch('/movies', {
+        const response = await fetch("/api/movies", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

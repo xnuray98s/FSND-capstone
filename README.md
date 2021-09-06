@@ -70,12 +70,12 @@ npm install
 ### Endpoints
 
 ```js
-GET '/movies'
-GET '/actors'
-POST '/movies'
-POST '/actors'
-PATCH '/movies/${id}'
-PATCH '/actors/${id}'
-DELETE '/movies/${id}'
-DELETE '/actors/${id}'
+GET '/api/movies'
+GET '/api/actors'
+POST '/api/movies'
+POST '/api/actors'
+PATCH '/api/movies/${id}'
+PATCH '/api/actors/${id}'
+DELETE '/api/movies/${id}'
+DELETE '/api/actors/${id}'
 ```
