@@ -28,7 +28,7 @@ def create_app(test_config=None):
 
     @app.route("/")
     def index():
-        return jsonify({"message": "here here"})
+        return send_from_directory(app.static_folder, "index.html")
 
     @app.route("/api/actors")
     @requires_auth(permission="get:actors")
