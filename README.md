@@ -13,7 +13,21 @@ This is a casting websites that uses **Reac.js** in the frontend and **Flask** i
 7. you can delete a movie.
 8. you can delete an actor.
 
-[URL](https://fsnd-capstone-misk.herokuapp.com/)
+There are three roles:
+
+1. Casting Assistant
+   - can view actors and movies
+2. Casting Director
+   - can do everythin an Assistant can
+   - add or delete an actor from the database
+   - modify actors or movies
+3. Executive Producer
+   - can do everythin a Director can
+   - add or delete a movie from the database
+
+[API URL](https://fsnd-capstone-misk.herokuapp.com/)
+
+This project is part of Udacity FullStack Nanodegree.
 
 ## Installing Dependencies for the Backend
 

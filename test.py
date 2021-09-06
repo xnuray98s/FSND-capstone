@@ -1,4 +1,4 @@
-import os
+from os import environ
 import unittest
 import json
 from flask_sqlalchemy import SQLAlchemy
@@ -6,11 +6,11 @@ from flask_sqlalchemy import SQLAlchemy
 from app import create_app
 from models import setup_db, insert_dummy_values_for_test, Movie, Actor
 
-ASSISTANT_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlJzN01BWWlEZ291NzRsSzZLeV9jeSJ9.eyJpc3MiOiJodHRwczovL2NhcHN0b25lLXByb2plY3QtdWRhY2l0eS51cy5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NjEyOGE3OGU4ZmM0YmEwMDcxZjA2MTZiIiwiYXVkIjoiY2Fwc3RvbmUiLCJpYXQiOjE2MzA5MDU2MDcsImV4cCI6MTYzMDkxMjgwNywiYXpwIjoiZUpTcnNyY3RXdld4c1NpaEUxVzgwUzZPRGRpeTU1S28iLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbImdldDphY3RvcnMiLCJnZXQ6bW92aWVzIl19.hEnmy1tqwJTepKBUPOG-6-jy2R06tV5Yos90ZPfT85MqNiONWqvW6Y6a0OFBtjz0aD_WxfzafW0j6Z8ok5BrhV6AqG4xQTzJwDwJimbVtTlP_5Yknq8F1BMkB00nUurktVBw_MDyceZS2SV2m1plJyR3c3sjGwtVB4Z4hdKL6nnaP6EzWiDaKtHexEEk50Et-1QRuZdq4E2iyEa169BjS_uYT_28sMXMjHsi45pLvR1Y0yC1Tb8aDJH5egL87LQqG6xttvnurnwkU-Q2emzjnNqOV_E25VU3Tvg7TAqdYJ4EtSCC-w5WeMBQxcaNP9ccpxpFyZJiiLdYrNQ1v6uWMg"
-DIRECTOR_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlJzN01BWWlEZ291NzRsSzZLeV9jeSJ9.eyJpc3MiOiJodHRwczovL2NhcHN0b25lLXByb2plY3QtdWRhY2l0eS51cy5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NjEyOGE3Y2ZmNTQ4NjcwMDY5N2YyMDNlIiwiYXVkIjoiY2Fwc3RvbmUiLCJpYXQiOjE2MzA5MDU2ODEsImV4cCI6MTYzMDkxMjg4MSwiYXpwIjoiZUpTcnNyY3RXdld4c1NpaEUxVzgwUzZPRGRpeTU1S28iLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbImRlbGV0ZTphY3RvcnMiLCJnZXQ6YWN0b3JzIiwiZ2V0Om1vdmllcyIsInBhdGNoOmFjdG9ycyIsInBhdGNoOm1vdmllcyIsInBvc3Q6YWN0b3JzIl19.GApNNwRF-tYCOZujJ4dQ_9i4jqze4-7GyzyNd36u91cypYyz0MCDYPcX4b6kRWxykSIviIEJLMcmjGbTRwtJ9VTMSxeD7rzcLZ01-LX7pu1VRm7r8ggvwpsU1iX9_NSf-09v8r1SYjPZ5CmG39OjnKj4YLHI1ITZDDoo4tBNUaRODKjTy69QHLIN7flqJPSoUireuuF9gZrvuwEsqpItfpJ1CA3OJJwxopYn1ds65KDOj8vour_U3F15WZlyBzl2LyciCniXP0iBgFtioQ91oFEcnEIbTZfBte2wicD4w4g9AOayqH-4hi4f2RueD4z2bHDCY5jHuAdPK6sTfLR3RQ"
-PRODUCER_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlJzN01BWWlEZ291NzRsSzZLeV9jeSJ9.eyJpc3MiOiJodHRwczovL2NhcHN0b25lLXByb2plY3QtdWRhY2l0eS51cy5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NjEyOGE4OGEyYzFjYzkwMDcxMDg4ODk5IiwiYXVkIjoiY2Fwc3RvbmUiLCJpYXQiOjE2MzA5MDUyMjgsImV4cCI6MTYzMDkxMjQyOCwiYXpwIjoiZUpTcnNyY3RXdld4c1NpaEUxVzgwUzZPRGRpeTU1S28iLCJzY29wZSI6IiIsInBlcm1pc3Npb25zIjpbImRlbGV0ZTphY3RvcnMiLCJkZWxldGU6bW92aWVzIiwiZ2V0OmFjdG9ycyIsImdldDptb3ZpZXMiLCJwYXRjaDphY3RvcnMiLCJwYXRjaDptb3ZpZXMiLCJwb3N0OmFjdG9ycyIsInBvc3Q6bW92aWVzIl19.ESVfo-oA0Tzt_TwZTBt6WwU2_Goz8V5YkkAWfvG_4QyZ6kXdgXFhobCR74NsZTQCoZkHZOHmSS4JgQoMLf1y889uPgXeTD6r125Ys2BOH7JqIDRFxyQpCnZbf8KpSiMzXv2_ombCOShq-tqKn8aw69KanR5gyED0fg5zjSkI5v2suBRG4iUPV5_hBdGaRaAa4IueCT0TsVbyhI5j3tRWxjN9i_ayc-JVfzhkrh9cT8D3nqpz9-o6VSTiSRas5uwUjPv0YSyoMqpGXTpcSh0nYyOzn3TiWpw99tBiZeYFJ3MBBcc3b7GzKetrSFl1nuEKovG7TdC6jYCtXZzMy8sEAw"
-NO_KID = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2NhcHN0b25lLXByb2plY3QtdWRhY2l0eS51cy5hdXRoMC5jb20vIiwiaWF0IjoxNjMwODg2OTg3LCJleHAiOjE2MzA4ODgyNDEsImF1ZCI6ImNhcHN0b25lIiwic3ViIjoiSkZuVW96WXRIa3BJcXNCUnB0bERIcmFmeHV6cDFneFdAY2xpZW50cyIsImF6cCI6IkpGblVvell0SGtwSXFzQlJwdGxESHJhZnh1enAxZ3hXIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIn0.UUH4bnTyyZIMhyrarZJg_jc6JPFpVPOYgzRfywwEy94"
-NO_PERMISSIONS = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlJzN01BWWlEZ291NzRsSzZLeV9jeSJ9.eyJpc3MiOiJodHRwczovL2NhcHN0b25lLXByb2plY3QtdWRhY2l0eS51cy5hdXRoMC5jb20vIiwic3ViIjoiSkZuVW96WXRIa3BJcXNCUnB0bERIcmFmeHV6cDFneFdAY2xpZW50cyIsImF1ZCI6ImNhcHN0b25lIiwiaWF0IjoxNjMwODg3ODEyLCJleHAiOjE2MzA5NzQyMTIsImF6cCI6IkpGblVvell0SGtwSXFzQlJwdGxESHJhZnh1enAxZ3hXIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIiwicGVybWlzc2lvbnMiOltdfQ.JglDKrsiaV9B1iGqLCT639_19CtN8e0fQZWORHGj_ZIPab2-IL2u_n6mzHucnJ77hyB7XfHoPKlqriW_AgyRvnR97eatVv0JnttTDKVeVzdtZ1eMLLThCL-KVVNfVMXh-fb15UO7lfhrWOubBbxjoEQJROWr4UX67s_SQwQIDpQSE-hHhRz54VJdBgy0Hl-YgId1O6RzLbxSrI9T2r1hGLM-E1qAimDqF4_SGY2XTfNjb3Mas094JPdwS8giJUxbG2d1jHQ5WcN1Q26AQ8JYqzpOautCq0sEUUSh-Kk1ieNM1FGOcWIX50kfTPY26e5CrHpOIQikMqsbrd9ohzIQaQ"
+ASSISTANT_TOKEN = environ.get("ASSISTANT_TOKEN")
+DIRECTOR_TOKEN = environ.get("DIRECTOR_TOKEN")
+PRODUCER_TOKEN = environ.get("PRODUCER_TOKEN")
+NO_KID = environ.get("NO_KID")
+NO_PERMISSIONS = environ.get("NO_PERMISSIONS")
 
 
 class CapstoneTestCase(unittest.TestCase):
@@ -39,15 +39,11 @@ class CapstoneTestCase(unittest.TestCase):
         """Executed after reach test"""
         pass
 
-    """
-    TODO
-    Write at least one test for each test for successful operation and for expected errors.
-    """
-
     def test_get_movies(self):
         # test with Assistant Role
         res = self.client().get(
-            "/api/movies", headers={"Authorization": f"Bearer {ASSISTANT_TOKEN}"}
+            "/api/movies",
+            headers={"Authorization": f"Bearer {ASSISTANT_TOKEN}"}
         )
         data = json.loads(res.data.decode("utf-8"))
 
@@ -58,7 +54,8 @@ class CapstoneTestCase(unittest.TestCase):
     def test_get_actors(self):
         # test with Diretor Role
         res = self.client().get(
-            "/api/actors", headers={"Authorization": f"Bearer {DIRECTOR_TOKEN}"}
+            "/api/actors",
+            headers={"Authorization": f"Bearer {DIRECTOR_TOKEN}"}
         )
         data = json.loads(res.data.decode("utf-8"))
 
@@ -111,7 +108,8 @@ class CapstoneTestCase(unittest.TestCase):
     def test_delete_movie(self):
         # test with Producer Role
         res = self.client().delete(
-            "/api/movies/1", headers={"Authorization": f"Bearer {PRODUCER_TOKEN}"}
+            "/api/movies/1",
+            headers={"Authorization": f"Bearer {PRODUCER_TOKEN}"}
         )
         data = json.loads(res.data)
 
@@ -125,7 +123,8 @@ class CapstoneTestCase(unittest.TestCase):
     def test_delete_actor(self):
         # test with Producer Role
         res = self.client().delete(
-            "/api/actors/1", headers={"Authorization": f"Bearer {PRODUCER_TOKEN}"}
+            "/api/actors/1",
+            headers={"Authorization": f"Bearer {PRODUCER_TOKEN}"}
         )
         data = json.loads(res.data)
 
@@ -164,7 +163,8 @@ class CapstoneTestCase(unittest.TestCase):
 
     def test_401_get_movies(self):
         res = self.client().get(
-            "/api/movies", headers={"Authorization": f"Bearer {NO_KID}"}
+            "/api/movies",
+            headers={"Authorization": f"Bearer {NO_KID}"}
         )
         data = json.loads(res.data)
         message = data["message"]
@@ -175,14 +175,16 @@ class CapstoneTestCase(unittest.TestCase):
 
     def test_400_get_actors(self):
         res = self.client().get(
-            "/api/actors", headers={"Authorization": f"Bearer {NO_PERMISSIONS}"}
+            "/api/actors",
+            headers={"Authorization": f"Bearer {NO_PERMISSIONS}"}
         )
         data = json.loads(res.data)
         message = data["message"]
 
         self.assertEqual(res.status_code, 400)
         self.assertEqual(message["code"], "invalid_claims")
-        self.assertEqual(message["description"], "permissions not included in JWT.")
+        self.assertEqual(message["description"],
+                         "permissions not included in JWT.")
 
     def test_401_post_movies(self):
         # test without Authorization
@@ -204,7 +206,8 @@ class CapstoneTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 401)
         self.assertEqual(message["code"], "invalid_header")
-        self.assertEqual(message["description"], "unable to find authorization")
+        self.assertEqual(message["description"],
+                         "unable to find authorization")
 
     def test_401_post_actors(self):
         res = self.client().post(
@@ -228,7 +231,8 @@ class CapstoneTestCase(unittest.TestCase):
 
     def test_403_delete_actors(self):
         res = self.client().delete(
-            "/api/actors/1", headers={"Authorization": f"Bearer {ASSISTANT_TOKEN}"}
+            "/api/actors/1",
+            headers={"Authorization": f"Bearer {ASSISTANT_TOKEN}"}
         )
         data = json.loads(res.data)
         message = data["message"]
@@ -238,7 +242,8 @@ class CapstoneTestCase(unittest.TestCase):
 
     def test_403_delete_movies(self):
         res = self.client().delete(
-            "/api/movies/1", headers={"Authorization": f"Bearer {DIRECTOR_TOKEN}"}
+            "/api/movies/1",
+            headers={"Authorization": f"Bearer {DIRECTOR_TOKEN}"}
         )
         data = json.loads(res.data)
         message = data["message"]

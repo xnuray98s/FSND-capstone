@@ -15,10 +15,12 @@ setup_db(app)
     binds a flask application and a SQLAlchemy service
 """
 
+
 # change the path to database_path_locally
 def setup_db(
     app,
-    database_path=os.environ["DATABASE_URL"].replace("postgres://", "postgresql://"),
+    database_path=os.environ["DATABASE_URL"].replace(
+        "postgres://", "postgresql://"),
 ):
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -85,7 +87,8 @@ class Movie(db.Model):
     imdb = Column(String)
     release = Column(String)
 
-    def __init__(self, title, image, cast, plot, genres, rating, imdb, release):
+    def __init__(self, title, image, cast,
+                 plot, genres, rating, imdb, release):
         self.title = title
         self.image = image
         self.cast = cast

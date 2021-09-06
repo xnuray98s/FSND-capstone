@@ -1,15 +1,16 @@
 import json
+from os import environ
 from flask import request, _request_ctx_stack
 from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
 
 
-AUTH0_DOMAIN = "capstone-project-udacity.us.auth0.com"
-ALGORITHMS = ["RS256"]
-API_AUDIENCE = "capstone"
+AUTH0_DOMAIN = environ.get("AUTH0_DOMAIN")
+ALGORITHMS = [environ.get("ALGORITHMS")]
+API_AUDIENCE = environ.get("API_AUDIENCE")
 
-## AuthError Exception
+# AuthError Exception
 
 
 class AuthError(Exception):
@@ -18,20 +19,22 @@ class AuthError(Exception):
         self.status_code = status_code
 
 
-## Auth Header
+# Auth Header
 
 
 def get_token_auth_header():
     if "Authorization" not in request.headers:
         raise AuthError(
-            {"code": "invalid_header", "description": "unable to find authorization"},
+            {"code": "invalid_header",
+             "description": "unable to find authorization"},
             401,
         )
 
     auth_header_parts = request.headers["Authorization"].split()
     if len(auth_header_parts) != 2 or auth_header_parts[0].lower() != "bearer":
         raise AuthError(
-            {"code": "invalid_header", "description": "Authorization malformed."}, 401
+            {"code": "invalid_header",
+             "description": "Authorization malformed."}, 401
         )
 
     return auth_header_parts[1]
@@ -48,7 +51,8 @@ def check_permissions(permission, payload):
         )
     if permission not in payload["permissions"]:
         raise AuthError(
-            {"code": "permission_denied", "description": "unauthorized access"},
+            {"code": "permission_denied",
+             "description": "unauthorized access"},
             403,
         )
     return True
@@ -61,7 +65,8 @@ def verify_decode_jwt(token):
     rsa_key = {}
     if "kid" not in unverified_header:
         raise AuthError(
-            {"code": "invalid_header", "description": "Authorization malformed."}, 401
+            {"code": "invalid_header",
+             "description": "Authorization malformed."}, 401
         )
     for key in jwks["keys"]:
         if key["kid"] == unverified_header["kid"]:
@@ -94,7 +99,8 @@ def verify_decode_jwt(token):
             raise AuthError(
                 {
                     "code": "invalid_claims",
-                    "description": "Incorrect claims. Please, check the audience and issuer.",
+                    "description": """Incorrect claims.
+                     Please, check the audience and issuer.""",
                 },
                 401,
             )

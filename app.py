@@ -71,7 +71,7 @@ def create_app(test_config=None):
                 }
             )
 
-        except:
+        except Exception:
             abort(422)
 
     @app.route("/api/movies/<int:id>", methods=["DELETE"])
@@ -94,7 +94,7 @@ def create_app(test_config=None):
                 }
             )
 
-        except:
+        except Exception:
             abort(422)
 
     @app.route("/api/actors", methods=["POST"])
@@ -113,7 +113,7 @@ def create_app(test_config=None):
             actor.insert()
             return jsonify({"success": True, "actor": [actor.format()]})
 
-        except:
+        except Exception:
             abort(422)
 
     @app.route("/api/movies", methods=["POST"])
@@ -134,7 +134,7 @@ def create_app(test_config=None):
             movie.insert()
             return jsonify({"success": True, "movie": [movie.format()]})
 
-        except:
+        except Exception:
             abort(422)
 
     @app.route("/api/actors/<int:id>", methods=["PATCH"])
@@ -165,7 +165,7 @@ def create_app(test_config=None):
                 actor.movie = movie
             actor.update()
             return jsonify({"success": True, "actor": [actor.format()]})
-        except:
+        except Exception:
             abort(422)
 
     @app.route("/api/movies/<int:id>", methods=["PATCH"])
@@ -202,31 +202,35 @@ def create_app(test_config=None):
                 movie.release = release
             movie.update()
             return jsonify({"success": True, "movie": [movie.format()]})
-        except:
+        except Exception:
             abort(422)
 
     @app.errorhandler(422)
     def unprocessable(error):
         return (
-            jsonify({"success": False, "error": 422, "message": "unprocessable"}),
+            jsonify({"success": False, "error": 422,
+                    "message": "unprocessable"}),
             422,
         )
 
     @app.errorhandler(404)
     def not_found(error):
         return (
-            jsonify({"success": False, "error": 404, "message": "resource not found"}),
+            jsonify({"success": False, "error": 404,
+                    "message": "resource not found"}),
             404,
         )
 
     @app.errorhandler(400)
     def bad_request(error):
-        return jsonify({"success": False, "error": 400, "message": "bad request"}), 400
+        return jsonify({"success": False, "error": 400,
+                        "message": "bad request"}), 400
 
     @app.errorhandler(405)
     def not_allowed(error):
         return (
-            jsonify({"success": False, "error": 405, "message": "method not allowed"}),
+            jsonify({"success": False, "error": 405,
+                    "message": "method not allowed"}),
             405,
         )
 
@@ -234,7 +238,8 @@ def create_app(test_config=None):
     def server_error(error):
         return (
             jsonify(
-                {"success": False, "error": 500, "message": "internal server error"}
+                {"success": False, "error": 500,
+                 "message": "internal server error"}
             ),
             500,
         )
@@ -243,7 +248,8 @@ def create_app(test_config=None):
     def auth_error(error):
         return (
             jsonify(
-                {"success": False, "error": error.status_code, "message": error.error}
+                {"success": False, "error": error.status_code,
+                 "message": error.error}
             ),
             error.status_code,
         )
