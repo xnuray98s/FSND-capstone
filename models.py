@@ -24,7 +24,7 @@ def setup_db(
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
-    insert_dummy_values_for_test()
+    db.create_all()
 
 
 def insert_dummy_values_for_test():
