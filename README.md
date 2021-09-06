@@ -41,8 +41,8 @@ There is a insert_dummy_values_for_test method in `/backend/models.py` that you 
 
 ### Running the server
 
-From within the `./src` directory first ensure you are working using your created virtual environment.
-
+First ensure you are working using your created virtual environment.
+Replace the default database_path with database_path_locally
 To run the server, execute:
 
 ```bash

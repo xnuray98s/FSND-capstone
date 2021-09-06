@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 import json
 
 database_name = "casting"
-database_path = "postgresql://{}:{}@{}/{}".format(
+database_path_locally = "postgresql://{}:{}@{}/{}".format(
     "postgres", "postgres", "localhost:5432", database_name
 )
 
@@ -15,7 +15,7 @@ setup_db(app)
     binds a flask application and a SQLAlchemy service
 """
 
-
+# change the path to database_path_locally
 def setup_db(
     app,
     database_path=os.environ["DATABASE_URL"].replace("postgres://", "postgresql://"),
