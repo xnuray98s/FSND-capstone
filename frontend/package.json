@@ -2,7 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "proxy": "https://fsnd-capstone-misk.herokuapp.com/api/",
+  "proxy": "https://fsnd-capstone-misk.herokuapp.com/",
   "dependencies": {
     "@auth0/auth0-react": "^1.6.0",
     "@chakra-ui/icons": "^1.0.15",
