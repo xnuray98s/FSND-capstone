@@ -29,7 +29,7 @@ def create_app(test_config=None):
 
     @app.route("/")
     def index():
-        return send_from_directory(app.static_folder, "index.html")
+        return app.send_static_file("index.html")
 
     @app.route("/api/actors")
     @requires_auth(permission="get:actors")
