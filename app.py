@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, abort, jsonify
+from flask import Flask, request, abort, jsonify, send_from_directory
 from flask.globals import current_app
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -12,7 +12,7 @@ from auth import AuthError, requires_auth
 
 def create_app(test_config=None):
     # create and configure the app
-    app = Flask(__name__, static_folder="frontend/build/", static_url_path="")
+    app = Flask(__name__, static_folder="frontend/build", static_url_path="")
     setup_db(app)
     CORS(app, resources={r"/api/*": {"origins": "*"}})
 
@@ -28,7 +28,7 @@ def create_app(test_config=None):
 
     @app.route("/")
     def index():
-        return app.send_static_file("index.html")
+        return send_from_directory(app.static_folder, "index.html")
 
     @app.route("/api/actors")
     @requires_auth(permission="get:actors")
