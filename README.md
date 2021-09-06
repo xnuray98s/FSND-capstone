@@ -13,6 +13,8 @@ This is a casting websites that uses **Reac.js** in the frontend and **Flask** i
 7. you can delete a movie.
 8. you can delete an actor.
 
+[URL](https://fsnd-capstone-misk.herokuapp.com/)
+
 ## Installing Dependencies for the Backend
 
 1. **Python 3.8** - Follow instructions to install the latest version of python for your platform in the [python docs](https://docs.python.org/3/using/unix.html#getting-and-installing-the-latest-version-of-python)
